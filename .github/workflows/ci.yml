@@ -1,0 +1,22 @@
+name: Build contract and frontend
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          profile: minimal
+      - name: Add wasm target
+        run: rustup target add wasm32-unknown-unknown
+      - name: Build contract
+        run: |
+          cd contract
+          cargo build --release --target wasm32-unknown-unknown
+      - name: List wasm
+        run: find . -name "*.wasm" || true
